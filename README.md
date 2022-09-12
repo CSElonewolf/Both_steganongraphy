@@ -1,4 +1,4 @@
-# Encryption & Decryption of Text & Images 
+# Encrypting & Decrypting for Text & Images 
 
 - Hide messages and images inside images.
 - Includes both encryption and decryption of images.
