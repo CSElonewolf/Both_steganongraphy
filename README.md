@@ -1,4 +1,4 @@
-# Image-In-Disguise
+# Encryption & Decryption of Text & Images 
 
 - Hide messages and images inside images.
 - Includes both encryption and decryption of images.
