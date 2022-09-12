@@ -1,5 +1,6 @@
 # Image-In-Disguise
-# Hide messages and images inside images. Includes both encryption and decryption. #
+
+Hide messages and images inside images. Includes both encryption and decryption. 
 
 The application(created using Python) implements the concept of Image Steganography. It helps in data encryption where user can hide his/her secret message or an image inside another image file and can share it easily which allow users to share information without the intermediate platform having the access to the hidden messages. Only the user having the same application would be able to decode the message inside the image. This application is just a small prototype of how things work in Steganogarphy and can be implemented on large scale in Chat Applications with a community of thousands of users,
 
