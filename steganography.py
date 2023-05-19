@@ -12,6 +12,51 @@ main.title('Steganography- using Python')
 main.geometry('1485x800')
 font_def = tkFont.Font(family='lucida', size=20, weight = 'bold')
 
+
+#######
+
+def encrypt_text(text, key):
+    encrypted_text = ''
+    key_length = len(key)
+    for i, char in enumerate(text):
+        if char.isalpha():
+            # Get the ASCII values of the characters
+            text_char_code = ord(char.lower()) - ord('a')
+            key_char_code = ord(key[i % key_length].lower()) - ord('a')
+            # Apply the encryption algorithm
+            encrypted_code = (text_char_code + key_char_code) % 26 + ord('a')
+            encrypted_char = chr(encrypted_code)
+            # Preserve the case of the original character
+            if char.isupper():
+                encrypted_text += encrypted_char.upper()
+            else:
+                encrypted_text += encrypted_char
+        else:
+            encrypted_text += char
+    return encrypted_text
+
+def decrypt_text(text, key):
+    decrypted_text = ''
+    key_length = len(key)
+    for i, char in enumerate(text):
+        if char.isalpha():
+            # Get the ASCII values of the characters
+            text_char_code = ord(char.lower()) - ord('a')
+            key_char_code = ord(key[i % key_length].lower()) - ord('a')
+            # Apply the decryption algorithm
+            decrypted_code = (text_char_code - key_char_code) % 26 + ord('a')
+            decrypted_char = chr(decrypted_code)
+            # Preserve the case of the original character
+            if char.isupper():
+                decrypted_text += decrypted_char.upper()
+            else:
+                decrypted_text += decrypted_char
+        else:
+            decrypted_text += char
+    return decrypted_text
+
+#########
+
 def encode_text():
     main.destroy()
     
@@ -19,6 +64,9 @@ def encode_text():
 
     space = 15
     image_size = 360, 360
+
+    def goto_decode():
+        app.quit()
 
     def on_click():
         global path_image
@@ -35,6 +83,9 @@ def encode_text():
     def encrypt_data_into_image():
         global path_image
         data = txt.get(1.0, "end-1c")
+        en_key=key.get(1.0,"end-1c")
+        data=encrypt_text(data,en_key)
+
         img = cv2.imread(path_image)
         data = [format(ord(i), '08b') for i in data]
         _, width, _ = img.shape
@@ -64,7 +115,10 @@ def encode_text():
         path_to_save=filedialog.asksaveasfilename(defaultextension=".png",filetypes=(("png file", ".png"),("jpg file", ".jpg"),("All Files", ".")))
         cv2.imwrite(path_to_save, img)
         success_label = Label(app, text="Encryption Successful!",bg='lavender', font=("Cascadia Code", 20))
-        success_label.place(x=image_size[0]+200, y=450)
+        success_label.place(x=40, y=550)
+        #decode_button=Button(text='Click to decode This Image',fg="black",bg="white",width=25,command=goto_decode)
+        #decode_button['font'] =font_def 
+        #decode_button.place(x=image_size[0]+250,y=600)
 
 
     app = Tk()
@@ -77,8 +131,13 @@ def encode_text():
     txt = Text(app, wrap=WORD, width=75, font=("Cascadia Code", 12))
     txt.place(x=image_size[0]+3*space, y=50, height=300)
 
+    key = Text(app,wrap=WORD,width=75,font=("Cascadia Code",12))
+    key.place(x=image_size[0]+3*space, y=400, height=100)
+    key_label =Label(app, text="Enter Key:",bg='lavender', font=("Cascadia Code", 15))
+    key_label.place(x=image_size[0]+3*space, y=360)
+
     encrypt_button = Button(app, text="Encrypt and Save", bg='white', fg='black', command=encrypt_data_into_image)
-    encrypt_button.place(x=image_size[0]+310, y=360)
+    encrypt_button.place(x=image_size[0]+310, y=560)
 
     text_prompt_label = Label(app, text="Enter Text:",bg='lavender', font=("Cascadia Code", 15))
     text_prompt_label.place(x=image_size[0]+3*space, y=12)
@@ -100,7 +159,7 @@ def decode_text():
         render = ImageTk.PhotoImage(load)
         img = Label(app, image=render)
         img.image = render
-        img.place(x=460, y=50)
+        img.place(x=90, y=200)
 
         img = cv2.imread(path_image)
         data = []
@@ -126,15 +185,24 @@ def decode_text():
         for i in range(int((len(data)+1)/8)): message.append(data[i*8:(i*8+8)])
         message = [chr(int(''.join(i), 2)) for i in message]
         message = ''.join(message)
+        en_key=key.get(1.0,"end-1c")
+        message=decrypt_text(message,en_key)
         message = "Encrypted Text : "+message
         message_label = Label(app, text=message, bg='lavender', font=("Cascadia Code", 20))
-        message_label.place(x=710-len(message)*7.9, y=570)
+        message_label.place(x=710-len(message)*7.9, y=470)
+
     app = Tk()
     app.configure(background='lavender')
     app.title("Decrypt Text from Image")
     app.geometry('1485x800')
+
+    key = Text(app,wrap=WORD,width=75,font=("Cascadia Code",12))
+    key.place(x=250, y=60, height=100)
+    key_label =Label(app, text="Enter Key:",bg='lavender', font=("Cascadia Code", 15))
+    key_label.place(x=250, y=10)
+
     main_button = Button(app, text="Select Image to retrieve Text", bg='white', fg='black', command=decrypt)
-    main_button.place(x=550, y=10)
+    main_button.place(x=550, y=180)
     app.mainloop()
 
 def encode_image():
