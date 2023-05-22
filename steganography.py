@@ -219,9 +219,13 @@ def encode_image():
         path_image1 = filedialog.askopenfilename()
         load_image1 = Image.open(path_image1)
         load_image1 = load_image1.resize(size, Image.ANTIALIAS)
+        # Image.ANTIALIAS is used to rescale the image with the given size.
         load_image1.thumbnail(size, Image.ANTIALIAS)
+        # used to create an array by using the existing data
         np_load_image = np.asarray(load_image1)
+        #  Creates an image memory from an object exporting the array interface (using the buffer protocol)
         np_load_image = Image.fromarray(np.uint8(np_load_image))
+        # add the user-defined images in the application.
         render = ImageTk.PhotoImage(np_load_image)
         img = Label(app, image=render)
         img.image = render
